@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+    mongodb:
+        container_name: mongo_db
+        image: mongo:6.0.3
+        volumes:
+            - ./data/db:/data/db
+        ports:
+            - 27021:27017
+        restart: always
+        networks:
+            - mynetwork
+    redis2:
+        image: redis:alpine
+        container_name: "redis2"
+        volumes:
+            - ./data/redis/data/:/var/lib/redis/
+            - ./data/redis/log/:/var/log/redis
+        networks:
+            - mynetwork
+    worker-server:
+        container_name: "worker-server"
+        build:
+            context: worker
+            dockerfile: Dockerfile
+        ports:
+            - 3001:3001
+        depends_on:
+            - mongodb
+            - redis2
+        networks:
+            - mynetwork
+    backend-server:
+        container_name: "backend-server"
+        build:
+            context: backend
+            dockerfile: Dockerfile
+        ports:
+            - 3002:3002
+        depends_on:
+            - mongodb
+            - redis2
+            - worker-server
+        networks:
+            - mynetwork
+networks:
+    mynetwork:
+        driver: bridge
