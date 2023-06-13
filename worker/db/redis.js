@@ -1,6 +1,6 @@
 const { createClient } = require("redis");
 const { saveDatabyRedis } = require("../pub-sub");
-const redisUrl = `redis://127.0.0.1:6379`;
+const redisUrl = `redis://redis2:6379`;
 const redisChannel = "REDIS_TEST_CHANNEL";
 
 let redisClient;
@@ -20,13 +20,13 @@ const initRedis = async () => {
 	subscriber.on("ready", () => {
 		console.log("subscriber is ready for action!");
 		subscriber.subscribe(redisChannel, async (message) => {
-            console.log("subscriber service:- ", message);
-            try {
-                return await saveDatabyRedis(JSON.parse(message));
-            } catch (error) {
-                console.log({ error });
-            }
-        });
+			console.log("subscriber service:- ", message);
+			try {
+				return await saveDatabyRedis(JSON.parse(message));
+			} catch (error) {
+				console.log({ error });
+			}
+		});
 	});
 };
 
