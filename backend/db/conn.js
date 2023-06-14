@@ -20,6 +20,10 @@ const connectToDb = async () => {
 	}
 };
 
+(async () => {
+	await connectToDb();
+})();
+
 module.exports = {
 	connectToDb,
 };
